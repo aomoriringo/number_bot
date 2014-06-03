@@ -6,7 +6,7 @@ import tweepy
 from tweepy import Stream, TweepError
 import logging
 import urllib
-from seq import SequenceList
+from seq import get_sequences
 from token import (
     CONSUMER_KEY, CONSUMER_SECRET,
     ACCESS_TOKEN, ACCESS_TOKEN_SECRET
@@ -15,8 +15,7 @@ from token import (
 auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
 api = tweepy.API(auth_handler=auth)
-seqs = SequenceList()
-seqs.import_csv('numbers.csv')
+seqs = get_sequences()
 
 class CustomStreamListener(tweepy.StreamListener):
     def on_status(self, status):
@@ -24,13 +23,9 @@ class CustomStreamListener(tweepy.StreamListener):
             tw_count = status.author.statuses_count
             s = seqs.search(tw_count)
             if s:
-                print "---%s---\n" % status.author.screen_name
-
-                # print "%s さんのツイート数が %s 番目の %s に達しました" \
-                #     % (status.author.screen_name, s[1], s[0])
-                txt = "xxx さんのツイート数が %s 番目の %s に達しました" \
-                      % (s[1], s[0])
-                api.update_status(txt)
+                sname = status.author.screen_name.encode('utf-8')
+                print s.get_message(sname)
+                api.update_status(s.get_message(sname), status.id)
         except Exception, e:
             print >> sys.stderr, 'Encountered Exception:', e
 

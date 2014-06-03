@@ -1,73 +1,105 @@
 #-*- coding:utf-8 -*-
 import csv
 
+class Number:
+    def __init__(self, name, display_name, num, order):
+        self.name = name
+        self.display_name = display_name
+        self.num = num
+        self.order = order
+
+class NamedNumber(Number):
+    def get_message(self, username):
+        return "@%s さんのツイート数が%s番目の%s %sに達しました" \
+            % (username, self.order, self.display_name, self.num)
+
+class PowerNumber(Number):
+    def get_message(self, username):
+        return "@%s さんのツイート数が%sの%s乗 %sに達しました" \
+            % (username, self.name, self.order, self.num)
+
+class RoundNumber(Number):
+    def get_message(self, username):
+        return "@%s さんのツイート数が%sに達しました" \
+            % (username, self.num)
+
 class Sequence:
-    def __init__(self, name, display_name, step, start, seq, num_type=1):
+    def __init__(self, name, display_name, step, seq, num_class):
         # name, display_name: 数列の名称
         # step: seqのステップ数
-        # start: seqのoffset
-        # num_type: 数列の種別
-        # 1 -> 名称を持った数列
-        # 2 -> キリ番
         self.name = name
         self.seq = seq
         self.step = step
-        self.start = start
-        self.num_type = num_type
+        self.num_class = num_class
         self.display_name = display_name if display_name else name
-        # dname = display_name if display_name else name
-        # if isinstance(dname, str):
-        #     self.display_name = dname.decode('utf-8')
-        # else:
-        #     self.display_name = dname
+
+    def order(self, target):
+        if not self.exists_num(target):
+            return None
+        id_ = self.seq.index(target) + 1
+        return id_ * self.step
+
+    def exists_num(self, target):
+        return target in self.seq
+
+    def get_num(self, target):
+        if not self.exists_num(target):
+            return None
+        return self.num_class(self.name, self.display_name,
+                              target, self.order(target))
 
 class SequenceList(list):
-    def __init__(self):
+    def __init__(self, filename=None):
         list.__init__(self)
+        if filename:
+            self.import_csv(filename)
 
     def import_csv(self, filename):
         num_reader = csv.reader(open(filename, 'r'), delimiter=',', skipinitialspace=True)
         for row in num_reader:
-            self.append(
-                Sequence(
-                    row[0], row[2], int(row[1]),
-                    1, [int(x) for x in row[3:]])
-                )
+            seq = self.gen_sequence(row)
+            self.append(seq)
 
     def search(self, target):
         for s in self:
-            seq = s.seq
-            if target in seq:
-                id = seq.index(target)
-                return s.display_name, (id + s.start) * s.step, s.num_type
+            if s.exists_num(target):
+                return s.get_num(target)
         return None
 
+class NamedSequenceList(SequenceList):
+    def gen_sequence(self, csvrow):
+        '''
+        csv format
+        [sequence name] [step] [display name] [numbers...]
+        '''
+        name         = csvrow[0]
+        step         = int(csvrow[1])
+        display_name = csvrow[2]
+        nums         = [int(x) for x in csvrow[3:]]
+        return Sequence(name, display_name, step, nums, NamedNumber)
 
-#seqs = SequenceList()
-#seqs.import_csv('numbers.csv')
+class PowerSequenceList(SequenceList):
+    def gen_sequence(self, csvrow):
+        '''
+        csv format
+        [base number] [numbers...]
+        '''
+        name         = csvrow[0]
+        nums         = [int(x) for x in csvrow[1:]]
+        return Sequence(name, name, 1, nums, PowerNumber)
 
-turnings = []
-turnings += [x*100 for x in range(1,9)]
-turnings += [x*1000 for x in range(1,9)]
-turnings += [x*10000 for x in range(1,9)]
-turnings += [x*100000 for x in range(1,9)]
-turnings += [x*111 for x in range(1,9)]
-turnings += [x*1111 for x in range(1,9)]
-turnings += [x*11111 for x in range(1,9)]
-turnings += [x*111111 for x in range(1,9)]
-#seqs.append(Sequence('turning point numbers', 1, 1, turnings, 2))
+class RoundSequenceList(SequenceList):
+    def gen_sequence(self, csvrow):
+        '''
+        csv format
+        [numbers...]
+        '''
+        nums = [int(x) for x in csvrow]
+        return Sequence('round', '', 1, nums, RoundNumber)
 
-def print_nums(_from, to):
-    for x in range(_from, to):
-        s = seqs.search(x)
-        if s:
-            print x, " -> ", s[0], s[1], 'th'
-        else:
-            pass
-
-def num_count(_from, to, step):
-    from_idx = _from
-    while from_idx < _from:
-        to_idx = from_idx + step
-        for x in range(from_idx, to_idx):
-            s = seqs.search(x)
+def get_sequences():
+    seq = SequenceList()
+    seq.extend(NamedSequenceList('data/named_numbers.csv'))
+    seq.extend(PowerSequenceList('data/power_numbers.csv'))
+    seq.extend(RoundSequenceList('data/round_numbers.csv'))
+    return seq
