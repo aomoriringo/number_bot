@@ -15,7 +15,12 @@ class Sequence:
         self.start = start
         self.num_type = num_type
         self.display_name = display_name if display_name else name
- 
+        # dname = display_name if display_name else name
+        # if isinstance(dname, str):
+        #     self.display_name = dname.decode('utf-8')
+        # else:
+        #     self.display_name = dname
+
 class SequenceList(list):
     def __init__(self):
         list.__init__(self)
@@ -38,8 +43,8 @@ class SequenceList(list):
         return None
 
 
-seqs = SequenceList()
-seqs.import_csv('numbers.csv')
+#seqs = SequenceList()
+#seqs.import_csv('numbers.csv')
 
 turnings = []
 turnings += [x*100 for x in range(1,9)]
@@ -52,8 +57,7 @@ turnings += [x*11111 for x in range(1,9)]
 turnings += [x*111111 for x in range(1,9)]
 #seqs.append(Sequence('turning point numbers', 1, 1, turnings, 2))
 
-
-def print_nums(_from, to): 
+def print_nums(_from, to):
     for x in range(_from, to):
         s = seqs.search(x)
         if s:
