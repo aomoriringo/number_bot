@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+
+#number_bot
+ACCESS_TOKEN = '77261630-yTNYDvUO7GzBgdt1eI5bzXoB9DZ4cXi8W4wSeIHB5'
+ACCESS_TOKEN_SECRET = '9wGeraiBpZT8KivrdZo8SBw8JPDVfO01MYfAMcvxk88uR'
+
+#test
+CONSUMER_KEY = 'a86KDAbgzutBDsv6axbmZw'
+CONSUMER_SECRET = 'eGwZE2sptUP8qbgZa9rfLn3GDm5crONjw2v8pPvToM'
+
+#aomoriringo
+#ACCESS_TOKEN = '6641182-bvoTBWLgoU3HvsSkcvb7e7ZYjNoRxMBDjinlPSI'
+#ACCESS_TOKEN_SECRET = 'dRG2Ndlapcrv1V7Id78mIRqcAppScRePZxc3HBQKBk'

@@ -10,9 +10,15 @@ class Number:
         self.order = order
 
 class NamedNumber(Number):
-    def get_message(self, username):
-        return "@%s さんのツイート数が%s番目の%s %sに達しました" \
-            % (username, self.order, self.display_name, self.num)
+    def get_message(self, username, lang='en'):
+        if lang=='ja':
+            return "@%s さんのツイート数が%s番目の%s %sに達しました" \
+                   % (username, self.order, self.display_name, self.num)
+        else:
+            # TODO: orderをst, nd, rd, thなど
+            #       適切な文字を付加するmethod
+            return "A number of @%s's tweet was reached to %sth %s, %s." \
+                    % (username, self.order, self.name, self.num)
 
 class PowerNumber(Number):
     def get_message(self, username):
