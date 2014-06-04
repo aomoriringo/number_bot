@@ -57,6 +57,8 @@ class CustomStreamListener(tweepy.StreamListener):
             logging.error("Unknown message type: " + str(raw_data))
 
     def on_status(self, status):
+        if status.author.screen_name == 'number_bot':
+            return True          # ignore
         try:
             self.count += 1
             tw_count = status.author.statuses_count
@@ -72,7 +74,15 @@ class CustomStreamListener(tweepy.StreamListener):
             print >> sys.stderr, 'Encountered Exception:', e
 
     def on_event(self, status):
-        print status.event
+        sid   = status.source['id']
+        sname = status.source['screen_name']
+        if sname == 'number_bot':
+            pass             # ignore
+        elif status.event == 'follow':
+            api.create_friendship(sid)
+        #elif status.event == 'unfollow':
+        #    print 'unfollow %s' % sname
+        #    api.destroy_friendship(sid)
 
     def on_error(self, status_code):
         print >> sys.stderr, 'Encountered error with status code:', e
