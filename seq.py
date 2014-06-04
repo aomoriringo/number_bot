@@ -1,5 +1,6 @@
 #-*- coding:utf-8 -*-
 import csv
+from prime import prime_table
 
 class Number:
     def __init__(self, name, display_name, num, order):
@@ -66,6 +67,19 @@ class SequenceList(list):
                 return s.get_num(target)
         return None
 
+class PrimeSequenceList(SequenceList):
+    def __init__(self, to=None, step=100):
+        list.__init__(self)
+        if to:
+            self.extend_primes(to, step)
+
+    def extend_primes(self, to, step):
+        name = 'prime'
+        display_name = '素数'
+        _ptable = prime_table(to)
+        ptable = [n for i, n in enumerate(_ptable) if (i+1)%step==0]
+        self.append(Sequence(name, display_name, step, ptable, NamedNumber))
+
 class NamedSequenceList(SequenceList):
     def gen_sequence(self, csvrow):
         '''
@@ -100,6 +114,7 @@ class RoundSequenceList(SequenceList):
 def get_sequences():
     seq = SequenceList()
     seq.extend(NamedSequenceList('data/named_numbers.csv'))
+    seq.extend(PrimeSequenceList(1000000, 10))
     seq.extend(PowerSequenceList('data/power_numbers.csv'))
     seq.extend(RoundSequenceList('data/round_numbers.csv'))
     return seq

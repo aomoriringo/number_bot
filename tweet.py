@@ -72,7 +72,7 @@ class CustomStreamListener(tweepy.StreamListener):
             print >> sys.stderr, 'Encountered Exception:', e
 
     def on_event(self, status):
-        print status
+        print status.event
 
     def on_error(self, status_code):
         print >> sys.stderr, 'Encountered error with status code:', e
