@@ -35,7 +35,6 @@ def main():
     auth = OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
     api = API(auth_handler=auth)
-    #stream = Stream(auth, CustomStreamListener(api, options))
     stream = Stream(auth, CustomStreamListener(api, options))
     stream.timeout = None
     stream.userstream()

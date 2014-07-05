@@ -50,11 +50,11 @@ class CustomStreamListener(StreamListener):
             sys.stdout.flush()
             if s:
                 sname = status.author.screen_name.encode('utf-8')
-                print s.get_message(sname)
+                lang = status.author.lang
+                message = s.get_message(sname, lang)
+                print message
                 if not self.dry_run:
-                    lang = status.author.lang
-                    self.api.update_status(s.get_message(sname, lang),
-                                           status.id)
+                    self.api.update_status(message, status.id)
         except Exception, e:
             print >> sys.stderr, 'Encountered Exception:', e
 
