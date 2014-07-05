@@ -15,11 +15,15 @@ class CustomStreamListener(StreamListener):
     def __init__(self, api=None, options=None):
         super(CustomStreamListener, self).__init__(api)
         self.dry_run = options.dry_run
+        self.verbose = options.verbose
         self.count = 0
         print 'start number_bot'
 
     def on_data(self, raw_data):
         data = json.loads(raw_data)
+        if self.verbose:
+            print data
+            print '-'*60
 
         if 'in_reply_to_status_id' in data:
             status = Status.parse(self.api, data)
@@ -48,7 +52,8 @@ class CustomStreamListener(StreamListener):
                 sname = status.author.screen_name.encode('utf-8')
                 print s.get_message(sname)
                 if not self.dry_run:
-                    self.api.update_status(s.get_message(sname), 
+                    lang = status.author.lang
+                    self.api.update_status(s.get_message(sname, lang),
                                            status.id)
         except Exception, e:
             print >> sys.stderr, 'Encountered Exception:', e
