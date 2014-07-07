@@ -18,7 +18,7 @@ class Number:
             return "@%s さんのツイート数が%sに達しました" \
                    % (username, detail)
         else:
-            return "%s's tweet count has reached %s." \
+            return "@%s's tweet count has reached %s." \
                    % (username, detail)
 
 class NamedNumber(Number):
