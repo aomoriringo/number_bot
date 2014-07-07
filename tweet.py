@@ -35,6 +35,8 @@ class CustomStreamListener(StreamListener):
                 return False
         elif 'friends' in data:
             pass # ignore
+        elif 'delete' in data:
+            pass # ignore
         else:
             logging.error("Unknown message type: " + str(raw_data))
 
