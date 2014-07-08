@@ -37,6 +37,8 @@ class CustomStreamListener(StreamListener):
             pass # ignore
         elif 'delete' in data:
             pass # ignore
+        elif 'user_suspend' in data:
+            pass # ignore
         else:
             logging.error("Unknown message type: " + str(raw_data))
 
