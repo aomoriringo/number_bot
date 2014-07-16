@@ -8,6 +8,8 @@ import logging
 import urllib
 from seq import get_sequences
 
+MIN_TWEET_COUNT = 100
+
 json = import_simplejson()
 seqs = get_sequences()
 
@@ -52,7 +54,7 @@ class CustomStreamListener(StreamListener):
             sys.stdout.write('\r%8s %-15s ' \
                              % (self.count, status.author.screen_name))
             sys.stdout.flush()
-            if s:
+            if s and s.num >= MIN_TWEET_COUNT:
                 sname = status.author.screen_name.encode('utf-8')
                 lang = status.author.lang
                 message = s.get_message(sname, lang)
